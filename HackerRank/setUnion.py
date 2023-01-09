@@ -1,0 +1,5 @@
+n=int(input())
+nsep=set(map(int, input().split()))
+s=int(input())
+ssep=set(map(int, input().split()))
+print(len(set(nsep.union(ssep))))
