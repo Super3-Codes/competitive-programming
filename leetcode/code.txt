@@ -1,0 +1,131 @@
+import java.io.*;
+
+class DataManagement {
+    private String filename;
+    
+    public DataManagement(String filename) {
+        this.filename = filename;
+    }
+    
+    public String readData() {
+        BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
+        System.out.print("Enter your first and last name: ");
+        try {
+            return reader.readLine();
+        } catch (IOException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+    
+    public void writeDataToFile(String name) {
+        try (PrintWriter writer = new PrintWriter(new BufferedWriter(new FileWriter(filename, true)))) {
+            writer.println(name);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+    
+    public String readDataFromFile() {
+        try (BufferedReader reader = new BufferedReader(new FileReader(filename))) {
+            StringBuilder sb = new StringBuilder();
+            String line;
+            while ((line = reader.readLine()) != null) {
+                sb.append(line);
+                sb.append("\n");
+            }
+            return sb.toString();
+        } catch (IOException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+}
+
+public class Main {
+    public static void main(String[] args) {
+        String filename = "names.txt";
+        DataManagement dm = new DataManagement(filename);
+        String name = dm.readData();
+        dm.writeDataToFile(name);
+        String data = dm.readDataFromFile();
+        System.out.println("Names in file:");
+        System.out.println(data);
+    }
+}
+
+
+
+###########5#######################
+
+import java.io.*;
+import java.net.URL;
+
+public class BankAccountChecker {
+    public static void main(String[] args) {
+        String bankNumbersUrl = "https://ewib.nbp.pl/plewibnra?dokNazwa=plewibnra.txt";
+        String bankNumbersFilename = "bank_numbers.txt";
+        downloadFile(bankNumbersUrl, bankNumbersFilename);
+        
+        BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
+        System.out.print("Enter the first three digits of your bank account: ");
+        try {
+            String input = reader.readLine();
+            String abbreviatedBankNumber = null;
+            String bankName = null;
+            String line;
+            
+            BufferedReader fileReader = new BufferedReader(new FileReader(bankNumbersFilename));
+            while ((line = fileReader.readLine()) != null) {
+                if (line.startsWith(input)) {
+                    String[] parts = line.split(";");
+                    abbreviatedBankNumber = parts[1];
+                    bankName = parts[2];
+                    break;
+                }
+            }
+            fileReader.close();
+            
+            if (abbreviatedBankNumber == null || bankName == null) {
+                System.out.println("Bank not found for input " + input);
+            } else {
+                System.out.println("Your bank is " + bankName + " (" + abbreviatedBankNumber + ")");
+            }
+            
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+    
+    private static void downloadFile(String urlString, String filename) {
+        try (BufferedInputStream in = new BufferedInputStream(new URL(urlString).openStream());
+             FileOutputStream fileOutputStream = new FileOutputStream(filename)) {
+            byte[] dataBuffer = new byte[1024];
+            int bytesRead;
+            while ((bytesRead = in.read(dataBuffer, 0, 1024)) != -1) {
+                fileOutputStream.write(dataBuffer, 0, bytesRead);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+}
+
+########################3##########################
+public class Main {
+    public static void main(String[] args) {
+        try (BufferedReader reader = new BufferedReader(new FileReader("input.txt"));
+             BufferedWriter writer = new BufferedWriter(new FileWriter("output.txt"))) {
+            String line;
+            while ((line = reader.readLine()) != null) {
+                line = line.replace(' ', '-');
+                writer.write(line);
+                writer.newLine();
+            }
+        } catch (FileNotFoundException e) {
+            System.out.println("Input file not found");
+        } catch (IOException e) {
+            System.out.println("Error reading or writing file");
+        }
+    }
+}
