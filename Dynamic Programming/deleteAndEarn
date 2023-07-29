@@ -1,0 +1,21 @@
+class Solution:
+    def deleteAndEarn(self, nums: List[int]) -> int:
+        freq = sorted(Counter(nums).items())
+        print(freq)
+        cache = {}
+        def dp(index):
+            if index >= len(freq):
+                return 0
+            if index in cache:
+                return cache[index]
+            if index < len(freq) - 1 and freq[index][0] + 1 == freq[index+1][0]  :
+                choice1 = freq[index][0] * freq[index][1] + dp(index+2)
+            else:
+                choice1 = freq[index][0] * freq[index][1] + dp(index+1)
+           
+            choice2 = dp(index+1)
+           
+            cache[index] = max(choice1,choice2)
+            
+            return max(choice1,choice2)
+        return dp(0)
